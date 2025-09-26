@@ -4,53 +4,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+
+    // New method to display the entire school directory
+    public static void displaySchoolDirectory(List<Person> people) {
+        System.out.println("\n--- School Directory ---");
+        for (Person person : people) {
+            person.displayDetails();  // Polymorphic call
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println("<---- People and Courses ---->\n");
+        System.out.println("--- School Administration & Attendance System ---");
 
-        // Students
-        Student[] students = new Student[3];
-        students[0] = new Student("Subhadeep", "10th Grade");
-        students[1] = new Student("Suman", "11th Grade");
-        students[2] = new Student("Sagar", "12th Grade");
+        // --- Data Setup ---
+        List<Student> students = new ArrayList<>();
+        Student s1 = new Student("Alice Wonderland", "Grade 10");
+        Student s2 = new Student("Bob The Builder", "Grade 9");
+        students.add(s1);
+        students.add(s2);
 
-        System.out.print("Registered Students:\n");
-        for (Student student : students) {
-            student.displayDetails();
-            System.out.println();
-        }
+        List<Teacher> teachers = new ArrayList<>();
+        Teacher t1 = new Teacher("Dr. Strange", "Physics");
+        Teacher t2 = new Teacher("Prof. Turing", "Computer Science");
+        teachers.add(t1);
+        teachers.add(t2);
 
-        // Teacher
-        Teacher teacher = new Teacher("Mr. Chikara", "OOPS");
-        System.out.print("Teacher:\n");
-        teacher.displayDetails();
-        System.out.println();
+        List<Staff> staff = new ArrayList<>();
+        Staff st1 = new Staff("Mr. Clean", "Janitor");
+        staff.add(st1);
 
-        // Staff
-        Staff staff = new Staff("John", "Librarian");
-        System.out.print("Staff:\n");
-        staff.displayDetails();
-        System.out.println();
+        List<Course> courses = new ArrayList<>();
+        Course c1 = new Course("Intro to Quantum Physics");
+        Course c2 = new Course("Advanced Algorithms");
+        courses.add(c1);
+        courses.add(c2);
 
-        // Courses
-        Course[] courses = new Course[3];
-        courses[0] = new Course("OOP");
-        courses[1] = new Course("DBMS");
-        courses[2] = new Course("Networks");
-
-        System.out.print("Available Courses:\n");
-        for (Course course : courses) {
-            course.displayDetails();
-        }
-
-        // Attendance Records
+        // Create Attendance Records with Student & Course objects
         List<AttendanceRecord> attendanceLog = new ArrayList<>();
-        attendanceLog.add(new AttendanceRecord(students[0].getId(), courses[0].getCourseId(), "Present"));
-        attendanceLog.add(new AttendanceRecord(students[1].getId(), courses[1].getCourseId(), "Absent"));
-        attendanceLog.add(new AttendanceRecord(students[2].getId(), courses[2].getCourseId(), "Late"));
+        attendanceLog.add(new AttendanceRecord(s1, c1, "Present"));
+        attendanceLog.add(new AttendanceRecord(s2, c1, "Absent"));
+        attendanceLog.add(new AttendanceRecord(s1, c2, "Present"));
 
-        System.out.println("Attendance Records:\n");
-        for (AttendanceRecord record : attendanceLog) {
-            record.displayRecord();
+        // --- School Directory ---
+        List<Person> schoolPeople = new ArrayList<>();
+        schoolPeople.addAll(students);
+        schoolPeople.addAll(teachers);
+        schoolPeople.addAll(staff);
+
+        displaySchoolDirectory(schoolPeople);
+
+        // --- Courses ---
+        System.out.println("\n--- Courses ---");
+        for (Course c : courses) c.displayDetails();
+
+        // --- Attendance Log ---
+        System.out.println("\n--- Attendance Log ---");
+        for (AttendanceRecord ar : attendanceLog) ar.displayRecord();
+
+        // --- Saving Data ---
+        System.out.println("\n--- Saving Data to Files ---");
+        FileStorageService storageService = new FileStorageService();
+
+        // Filter Students from schoolPeople
+        List<Student> studentData = new ArrayList<>();
+        for (Person p : schoolPeople) {
+            if (p instanceof Student) {
+                studentData.add((Student) p);
+            }
         }
+
+        storageService.saveData(studentData, "students.txt");
+        storageService.saveData(courses, "courses.txt");
+        storageService.saveData(attendanceLog, "attendance_log.txt");
+
+        System.out.println("\nSession 7: School Directory & Attendance with Object References Complete.");
+        System.out.println("Check students.txt, courses.txt, and attendance_log.txt for output.");
     }
 }
