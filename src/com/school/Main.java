@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
 
-    // New method to display the entire school directory
+    // Method to display the entire school directory
     public static void displaySchoolDirectory(List<Person> people) {
         System.out.println("\n--- School Directory ---");
         for (Person person : people) {
@@ -39,7 +39,7 @@ public class Main {
         courses.add(c1);
         courses.add(c2);
 
-        // Create Attendance Records with Student & Course objects
+        // --- Create Initial Attendance Records (Part 7 style) ---
         List<AttendanceRecord> attendanceLog = new ArrayList<>();
         attendanceLog.add(new AttendanceRecord(s1, c1, "Present"));
         attendanceLog.add(new AttendanceRecord(s2, c1, "Absent"));
@@ -55,11 +55,16 @@ public class Main {
 
         // --- Courses ---
         System.out.println("\n--- Courses ---");
-        for (Course c : courses) c.displayDetails();
+        for (Course c : courses) {
+            c.displayDetails();
+        }
 
-        // --- Attendance Log ---
+        // --- Attendance Log (old part) ---
         System.out.println("\n--- Attendance Log ---");
-        for (AttendanceRecord ar : attendanceLog) ar.displayRecord();
+        for (AttendanceRecord ar : attendanceLog) {
+            ar.displayRecord();
+            System.out.println("---------------------------");
+        }
 
         // --- Saving Data ---
         System.out.println("\n--- Saving Data to Files ---");
@@ -79,5 +84,30 @@ public class Main {
 
         System.out.println("\nSession 7: School Directory & Attendance with Object References Complete.");
         System.out.println("Check students.txt, courses.txt, and attendance_log.txt for output.");
+
+        // =====================================================
+        // === Part 08: AttendanceService Integration Below ====
+        // =====================================================
+
+        System.out.println("\n--- Part 08: Using AttendanceService ---");
+
+        // Create AttendanceService using same FileStorageService
+        AttendanceService attendanceService = new AttendanceService(storageService);
+
+        // Use both overloaded markAttendance methods
+        attendanceService.markAttendance(s1, c1, "Present");
+        attendanceService.markAttendance(s2, c2, "Absent");
+        attendanceService.markAttendance(s2.getId(), c1.getCourseId(), "Present", students, courses);
+
+        // Display logs using different versions
+        attendanceService.displayAttendanceLog();
+        attendanceService.displayAttendanceLog(s1);
+        attendanceService.displayAttendanceLog(c2);
+
+        // Save attendance log
+        attendanceService.saveAttendanceData();
+
+        System.out.println("\n✅ Part 08 Complete: AttendanceService tested and data saved successfully.");
+        System.out.println("Check attendance_log.txt for updated records.");
     }
 }
