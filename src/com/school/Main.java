@@ -1,82 +1,49 @@
 package com.school;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
 
-    // New method to display the entire school directory
-    public static void displaySchoolDirectory(List<Person> people) {
-        System.out.println("\n--- School Directory ---");
-        for (Person person : people) {
-            person.displayDetails();  // Polymorphic call
-        }
-    }
-
     public static void main(String[] args) {
-        System.out.println("--- School Administration & Attendance System ---");
+        System.out.println("--- School Administration System ---");
 
-        // --- Data Setup ---
-        List<Student> students = new ArrayList<>();
+        FileStorageService storageService = new FileStorageService();
+        RegistrationService registrationService = new RegistrationService(storageService);
+
+        // --- Register People ---
         Student s1 = new Student("Alice Wonderland", "Grade 10");
         Student s2 = new Student("Bob The Builder", "Grade 9");
-        students.add(s1);
-        students.add(s2);
-
-        List<Teacher> teachers = new ArrayList<>();
         Teacher t1 = new Teacher("Dr. Strange", "Physics");
         Teacher t2 = new Teacher("Prof. Turing", "Computer Science");
-        teachers.add(t1);
-        teachers.add(t2);
-
-        List<Staff> staff = new ArrayList<>();
         Staff st1 = new Staff("Mr. Clean", "Janitor");
-        staff.add(st1);
 
-        List<Course> courses = new ArrayList<>();
+        registrationService.registerStudent(s1);
+        registrationService.registerStudent(s2);
+        registrationService.registerTeacher(t1);
+        registrationService.registerTeacher(t2);
+        registrationService.registerStaff(st1);
+
+        // --- Create Courses ---
         Course c1 = new Course("Intro to Quantum Physics");
         Course c2 = new Course("Advanced Algorithms");
-        courses.add(c1);
-        courses.add(c2);
+        registrationService.createCourse(c1);
+        registrationService.createCourse(c2);
 
-        // Create Attendance Records with Student & Course objects
-        List<AttendanceRecord> attendanceLog = new ArrayList<>();
-        attendanceLog.add(new AttendanceRecord(s1, c1, "Present"));
-        attendanceLog.add(new AttendanceRecord(s2, c1, "Absent"));
-        attendanceLog.add(new AttendanceRecord(s1, c2, "Present"));
-
-        // --- School Directory ---
-        List<Person> schoolPeople = new ArrayList<>();
-        schoolPeople.addAll(students);
-        schoolPeople.addAll(teachers);
-        schoolPeople.addAll(staff);
-
-        displaySchoolDirectory(schoolPeople);
-
-        // --- Courses ---
-        System.out.println("\n--- Courses ---");
-        for (Course c : courses) c.displayDetails();
-
-        // --- Attendance Log ---
-        System.out.println("\n--- Attendance Log ---");
-        for (AttendanceRecord ar : attendanceLog) ar.displayRecord();
-
-        // --- Saving Data ---
-        System.out.println("\n--- Saving Data to Files ---");
-        FileStorageService storageService = new FileStorageService();
-
-        // Filter Students from schoolPeople
-        List<Student> studentData = new ArrayList<>();
-        for (Person p : schoolPeople) {
-            if (p instanceof Student) {
-                studentData.add((Student) p);
-            }
+        // --- Display Directory ---
+        System.out.println("\n--- School Directory ---");
+        for (Person p : registrationService.getAllPeople()) {
+            p.displayDetails();
         }
-        storageService.saveData(studentData, "students.txt");
-        storageService.saveData(courses, "courses.txt");
-        storageService.saveData(attendanceLog, "attendance_log.txt");
 
-        System.out.println("\nSession 7: School Directory & Attendance with Object References Complete.");
-        System.out.println("Check students.txt, courses.txt, and attendance_log.txt for output.");
+        // --- Display Courses ---
+        System.out.println("\n--- Courses ---");
+        for (Course c : registrationService.getCourses()) {
+            c.displayDetails();
+        }
+
+        // --- Save Everything ---
+        System.out.println("\n--- Saving All Data ---");
+        registrationService.saveAllRegistrations();
+        System.out.println("✅ All data saved successfully.");
+
+        System.out.println("\nPart 9 complete. Check students.txt, teachers.txt, staff.txt, and courses.txt");
     }
 }
